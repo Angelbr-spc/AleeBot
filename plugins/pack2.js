@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 const handler = async (m, {conn, command, usedPrefix}) => {
   if (!global.db.data.chats[m.chat].nsfw) {
-    return conn.reply(m.chat, `🚩 El grupo no admite contenido *Nsfw.*\n\n> Para activarlo un *Administrador* debe usar el comando */on nsfw*`, m, rcanal);
+    return conn.reply(m.chat, `🚩 El grupo no admite contenido *Nsfw.*\n\n> Para activarlo un *Administrador* debe usar el comando */on nsfw*`, m, );
 }
    switch (command) {
     case 'pack':

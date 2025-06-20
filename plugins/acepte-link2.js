@@ -1,4 +1,4 @@
-// ©Créditos A Barboza
+// ©Créditos A 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑
 let handler = async (m, { conn, text }) => {
   // No Quites Los Créditos🚀
   m.react('⚙️');

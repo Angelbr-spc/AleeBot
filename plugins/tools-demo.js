@@ -14,7 +14,7 @@ isForwarded: false,
 "externalAdReply": {
 "showAdAttribution": true,
 "containsAutoReply": true,
-title: `[ Barboza -By|Bot Barboza ]`,
+title: `[ 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑 -By|𝐁𝐨𝐭 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑 ]`,
 body: ``,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://tinyurl.com/2awg2bch', 

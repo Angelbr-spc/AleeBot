@@ -1,19 +1,17 @@
+let handler = async (m, { conn }) => {
+  if (!m.isGroup) return
+  if (!conn.groupInviteCode) return
 
-var handler = async (m, { conn, args }) => {
-    try {
-        let group = m.chat;
-        let link = 'https://chat.whatsapp.com/' + await conn.groupInviteCode(group);
-        conn.reply(m.chat, '🔗 ' + link, m, { detectLink: true });
-    } catch (error) {
-        conn.reply(m.chat, 'Error al obtener el enlace del grupo. Asegúrate de que soy administrador y estoy en un grupo.', m);
-    }
+  try {
+    const code = await conn.groupInviteCode(m.chat)
+    m.reply(`🔗 https://chat.whatsapp.com/${code}`)
+  } catch {
+    m.reply('❌ No tengo permisos o ocurrió un error.')
+  }
 }
 
-handler.help = ['link'];
-handler.tags = ['grupo'];
-handler.command = ['link', 'linkgroup'];
+handler.customPrefix = /^(link|\.link)$/i
+handler.command = new RegExp // Para que funcione solo con customPrefix
+handler.group = true
 
-handler.group = true;
-handler.botAdmin = true;
-
-export default handler;
+export default handler

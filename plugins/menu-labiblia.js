@@ -5,7 +5,7 @@
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, command, text, usedPrefix }) => {
-  if (!text) return conn.reply(m.chat, '🚩 Ingresa la referencia bíblica que deseas buscar.\n\nEjemplo:\n' + `> *${usedPrefix + command}* john 3:16`, m, rcanal);
+  if (!text) return conn.reply(m.chat, '🚩 Ingresa la referencia bíblica que deseas buscar.\n\nEjemplo:\n' + `> *${usedPrefix + command}* john 3:16`, m, );
 
   await m.react('🕓');
 
@@ -22,7 +22,7 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
     txt += `  *» Traducción* : ${json.translation}\n`;
     txt += `  *» Contenido* : ${json.text.trim()}\n`;
 
-    await conn.reply(m.chat, txt, m, rcanal);
+    await conn.reply(m.chat, txt, m, );
     await m.react('✅');
   } catch (error) {
     console.error(error);

@@ -5,7 +5,8 @@ global.db.data.chats[m.chat].sBye = text
 conn.reply(m.chat, `*LA DESPEDIDA DEL GRUPO HA SIDO CONFIGURADA*`, m)  
 
 } else {
-    conn.reply(m.chat, `*_ESCRIBA EL MENSAJE DE DESPEDIDA_*\n*_OPCIONAL PUEDE USAR LO QUE ESTA CON "@" PARA AGREGAR MÁS INFORMACIÓN:_*\n\n*⚡ @user (Mención al usuario(a))*\n\n*RECUERDE QUE EL "@" ES OPCIONAL*`, m)
+    conn.reply(m.chat, `𝐄𝐬𝐜𝐫𝐢𝐛𝐞 𝐞𝐥 𝐌𝐞𝐧𝐬𝐚𝐣𝐞 𝐝𝐞 𝐃𝐞𝐬𝐩𝐞𝐝𝐢𝐝𝐚 𝐄𝐣𝐞𝐦𝐩𝐥𝐨:
+.𝐬𝐞𝐭𝐛𝐲𝐞 𝐀𝐝𝐢𝐨𝐬 𝐩𝐮𝐭𝐨 👑`, m)
 }
 }
 

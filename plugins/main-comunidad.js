@@ -1,5 +1,5 @@
 const handler = async (m, { conn }) => {
-  let gifUrl = "https://files.catbox.moe/ltq7ph.jpg";
+  let gifUrl = "https://qu.ax/bUvvx.jpg";
 
   let text = `
  ──────── ⚔ ────────  
@@ -7,11 +7,11 @@ const handler = async (m, { conn }) => {
 ──────── ⚔ ────────  
 
 *Bot barboza*  
-• ,👥➤ **Grupo de WhatsApp de la comunidad de Bot Barboza Ai**  
+• ,👥➤ **Grupo de WhatsApp de la comunidad de 𝐁𝐨𝐭 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑 Ai**  
    Únete para compartir y resolver dudas con otros usuarios. 
   ➤https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 
-• 📢 ➤ *Canal de Bot Barboza Ai*  
+• 📢 ➤ *Canal de 𝐁𝐨𝐭 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑 Ai*  
    Recibe actualizaciones, noticias y lanzamientos del bot.  
 https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 • 💬 ➤ *Grupo de WhatsApp activo*  
@@ -20,7 +20,7 @@ https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 
 ──────── ⚔ ────────  
 🔍 *¿Sabías que...?* 
-- El bot Barboza Ai es actualizado regularmente para mejorar su desempeño.  
+- El bot 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑 Ai es actualizado regularmente para mejorar su desempeño.  
 - Puedes sugerir mejoras o reportar errores directamente en los grupos.  
 - Nuestra comunidad sigue creciendo y cuenta con soporte activo.  
 -

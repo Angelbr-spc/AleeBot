@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return conn.reply(m.chat, `🚩 Por favor, ingrese un nombre de usuario para buscar.\n\nEjemplo:\n> *${usedPrefix + command}* xrljose`, m, rcanal);
+    return conn.reply(m.chat, `🚩 Por favor, ingrese un nombre de usuario para buscar.\n\nEjemplo:\n> *${usedPrefix + command}* xrljose`, m, );
   }
 
   await m.react('🕓');

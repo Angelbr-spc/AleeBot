@@ -1,39 +1,33 @@
-let handler = async (m, {conn, usedPrefix, text}) => {
-  if (isNaN(text) && !text.match(/@/g)) {
-  } else if (isNaN(text)) {
-    var number = text.split`@`[1];
-  } else if (!isNaN(text)) {
-    var number = text;
-  }
+const handler = async (m, { conn, participants }) => {
+  const texto = (m.text || '').trim().toLowerCase()
 
-  if (!text && !m.quoted)
-    return conn.reply(
-      m.chat,
-      '🚩 Use el comandó correctamente\n\n`Ejemplo :`\n\n> . promote @barboza',
-      m
-    );
-  if (number.length > 13 || (number.length < 11 && number.length > 0))
-    return conn.reply(m.chat, `_. ᩭ✎El número ingresado es incorrecto, por favor ingrese el número correcto_`, m);
+  // Activadores exactos sin prefijo
+  if (!/^promote$|^ascender$|^admin$/i.test(texto)) return
+  if (!m.isGroup) return
+
+  const userSender = participants.find(u => u.id === m.sender)
+  const botSender = participants.find(u => u.id === conn.user.jid)
+
+  if (!userSender?.admin) return
+  if (!botSender?.admin) return
+
+  const targets = m.mentionedJid?.length
+    ? m.mentionedJid
+    : m.quoted
+    ? [m.quoted.sender]
+    : []
+
+  if (!targets.length) return
 
   try {
-    if (text) {
-      var user = number + "@s.whatsapp.net";
-    } else if (m.quoted.sender) {
-      var user = m.quoted.sender;
-    } else if (m.mentionedJid) {
-      var user = number + "@s.whatsapp.net";
-    }
-  } catch (e) {
-  } finally {
-    conn.groupParticipantsUpdate(m.chat, [user], "promote");
-    conn.reply(m.chat, `🚩 ordenes recibidas`, m);
-  }
-};
-handler.help = ["*593xxx*", "*@usuario*", "*responder chat*"].map((v) => "promote " + v);
-handler.tags = ["group"];
-handler.command = /^(promote|daradmin|darpoder)$/i;
-handler.group = true;
-handler.admin = true;
-handler.botAdmin = true;
-handler.fail = null;
-export default handler;
+    await conn.groupParticipantsUpdate(m.chat, targets, 'promote')
+  } catch (err) {}
+}
+
+handler.customPrefix = /^promote$|^ascender$|^admin$/i
+handler.command = new RegExp // solo sin prefijo
+handler.group = true
+handler.admin = true
+handler.botAdmin = true
+
+export default handler

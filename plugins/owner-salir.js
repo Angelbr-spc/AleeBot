@@ -1,16 +1,21 @@
-let handler = async (m, { conn, text, command }) => {
-let id = text ? text : m.chat  
-let chat = global.db.data.chats[m.chat]
-chat.welcome = false
-await conn.reply(id, `🚩 *Bot Barboza* Abandona El Grupo, Fué Genial Estar Aquí 👋`) 
-await conn.groupLeave(id)
-try {  
-chat.welcome = true
-} catch (e) {
-await m.reply(`${fg}`) 
-return console.log(e)
-}}
-handler.command = /^(salir|leavegc|salirdelgrupo|leave)$/i
+let handler = async (m, { conn }) => {
+  const texto = m.text?.toLowerCase().trim()
+  const activadores = ['salir', '.salir', '/salir', '!salir', 'bot fuera', 'vete bot', 'adiós bot']
+
+  // Solo activar si el mensaje coincide con los activadores
+  if (!activadores.includes(texto)) return
+
+  // Verifica que esté en grupo
+  if (!m.isGroup) return conn.reply(m.chat, '❗ Este comando solo funciona en grupos.', m)
+
+  // Sale del grupo inmediatamente
+  await conn.reply(m.chat, '𝐀𝐥𝐞𝐞 𝐁𝐨𝐭 𝐬𝐞 𝐃𝐞𝐬𝐩𝐢𝐝𝐞 👑', m)
+  await conn.groupLeave(m.chat)
+}
+handler.command = /^salir$/i
 handler.group = true
-handler.rowner = true
+handler.botAdmin = false // No necesita ser admin para salirse
+handler.register = false
+handler.exp = 0
+
 export default handler

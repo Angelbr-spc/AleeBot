@@ -1,63 +1,57 @@
-import fetch from 'node-fetch';
+/* Hecho por Angel Brou mejorado por Deylin */
 
-let handler = async (m, { conn, args, command, usedPrefix }) => {
-  const text = args.join(" ");
-  if (!text) {
-    return m.reply(
-      `╭─⬣「 *Barboza AI* 」⬣
-│ ≡◦ 🎧 *Uso correcto del comando:*
-│ ≡◦ ${usedPrefix + command} shakira soltera
-╰─⬣
-> © Barboza AI`
-    );
-  }
+import fetch from "node-fetch";
+import yts from "yt-search";
+
+let handler = async (m, { conn, text }) => {
+  if (!text) return conn.reply(m.chat, `𝐈𝐧𝐠𝐫𝐞𝐬𝐚 𝐞𝐥 𝐧𝐨𝐦𝐛𝐫𝐞 𝐝𝐞 𝐥𝐚 𝐜𝐚𝐧𝐜𝐢𝐨𝐧 𝐪𝐮𝐞 𝐝𝐞𝐬𝐞𝐚𝐬 👑.`);
+
+  await m.react('🕒');
+  conn.reply(m.chat, `*👑 𝐁𝐮𝐬𝐜𝐚𝐧𝐝𝐨 𝐬𝐮 𝐂𝐚𝐧𝐜𝐢𝐨𝐧 𝐝𝐞 𝐒𝐩𝐨𝐭𝐢𝐟𝐲...*`);
 
   try {
     let res = await fetch(`https://api.nekorinn.my.id/downloader/spotifyplay?q=${encodeURIComponent(text)}`);
-    let json = await res.json();
+    let gyh = await res.json();
 
-    if (!json.status || !json.result || !json.result.downloadUrl) {
-      return m.reply(
-        `╭─⬣「 *Barboza AI* 」⬣
-│ ≡◦ ❌ *No se encontró resultado para:* ${text}
-╰─⬣`
-      );
-    }
+    if (!gyh.result || !gyh.result.downloadUrl) throw '𝐍𝐨 𝐬𝐞 𝐞𝐧𝐜𝐨𝐧𝐭𝐫𝐨 𝐥𝐚 𝐂𝐚𝐧𝐜𝐢𝐨𝐧 𝐒𝐨𝐥𝐢𝐜𝐢𝐭𝐚𝐝𝐚 👑.';
 
-    let { title, artist, duration, cover, url } = json.result.metadata;
-    let audio = json.result.downloadUrl;
 
-    await conn.sendMessage(m.chat, {
-      image: { url: cover },
-      caption: `╭─⬣「 *MÚSICA SPOTIFY* 」⬣
-│ ≡◦ 🎵 *Título:* ${title}
-│ ≡◦ 👤 *Artista:* ${artist}
-│ ≡◦ ⏱️ *Duración:* ${duration}
-│ ≡◦ 🌐 *Spotify:* ${url}
-╰─⬣`,
-    }, { quoted: m });
+    const search = await yts(text);
+    if (!search.videos || search.videos.length === 0) throw '𝐍𝐨 𝐬𝐞 𝐞𝐧𝐜𝐨𝐧𝐭𝐫𝐨 𝐮𝐧 𝐯𝐢𝐝𝐞𝐨 𝐑𝐞𝐥𝐚𝐜𝐢𝐨𝐧𝐚𝐝𝐨 👑.';
 
-    await conn.sendMessage(m.chat, {
-      audio: { url: audio },
-      mimetype: 'audio/mp4',
-      ptt: false,
-      fileName: `${title}.mp3`
-    }, { quoted: m });
+    const videoInfo = search.videos[0];
+    const { title, thumbnail, timestamp: duration, views, ago, url } = videoInfo;
+
+    const doc = {
+      audio: { url: gyh.result.downloadUrl },
+      mimetype: 'audio/mpeg',
+      fileName: `${title}.mp3`,
+      contextInfo: {
+        externalAdReply: {
+          showAdAttribution: true,
+          mediaType: 2,
+          mediaUrl: url,
+          title: title,
+          body: `Duración: ${duration} | Reproducciones: ${views.toLocaleString()}`,
+          sourceUrl: url,
+          thumbnailUrl: thumbnail || "https://qu.ax/FxpUy.jpg",
+          renderLargerThumbnail: true
+        }
+      }
+    };
+
+    await conn.sendMessage(m.chat, doc, { quoted: m });
+    await m.react('✅');
 
   } catch (e) {
-    console.log(e);
-    return m.reply(
-      `╭─⬣「 *Barboza AI* 」⬣
-│ ≡◦ ⚠️ *Error al procesar la solicitud.*
-│ ≡◦ Intenta nuevamente más tarde.
-╰─⬣`
-    );
+    console.error(e);
+    await m.react('❌');
+    conn.reply(m.chat, '𝐇𝐮𝐛𝐨 𝐮𝐧 𝐄𝐫𝐫𝐨𝐫 𝐚𝐥 𝐁𝐮𝐬𝐜𝐚𝐫 𝐥𝐚 𝐜𝐚𝐧𝐜𝐢𝐨𝐧 𝐒𝐨𝐥𝐢𝐜𝐢𝐭𝐚𝐝𝐚 👑.');
   }
 };
 
-handler.help = ['spotify'].map(v => v + ' <nombre>');
+handler.help = ['spotify *<texto>*'];
 handler.tags = ['descargas'];
 handler.command = ['spotify'];
-handler.register = true;
 
 export default handler;

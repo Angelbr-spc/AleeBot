@@ -17,8 +17,8 @@ let handler = async (m, { conn, isRowner }) => {
     const chats = Object.entries(conn.chats).filter(([id, data]) => id && data.isChats);
     const groupsIn = chats.filter(([id]) => id.endsWith('@g.us'));
     const used = process.memoryUsage();
-    let Sisked = `╭─⬣「 *Estado De Bot Barboza* 」⬣\n`;
-    Sisked += `│ 👤 *Creador ∙* Barboza\n`;
+    let Sisked = `╭─⬣「 *Estado De 𝐁𝐨𝐭 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑* 」⬣\n`;
+    Sisked += `│ 👤 *Creador ∙* 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑\n`;
     Sisked += `│ 💎 *Grupos Unidos ∙* ${groupsIn.length}\n`;
     Sisked += `│ 💨 *Chats Privados ∙* ${chats.length - groupsIn.length}\n`;
     Sisked += `│ 🪙 *Total De Chats ∙* ${chats.length}\n`;
@@ -27,7 +27,7 @@ let handler = async (m, { conn, isRowner }) => {
     Sisked += `│ 💸 *Actividad ∙* ${muptime}\n`;
     Sisked += `╰─⬣`;
     
-    await conn.sendFile(m.chat, pp, 'nino.jpg', Sisked, fkontak, null, rcanal);
+    await conn.sendFile(m.chat, pp, 'nino.jpg', Sisked, fkontak, null, );
 }
 
 handler.help = ['status'];

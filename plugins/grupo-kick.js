@@ -1,19 +1,34 @@
-let handler = async (m, { conn, usedPrefix, command }) => {
-	
-if (!m.mentionedJid[0] && !m.quoted) return m.reply(`✳️ Ingresa el tag de un usuario. Ejemplo :\n\n*${usedPrefix + command}* @tag`) 
-let user = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted.sender
-if (conn.user.jid.includes(user)) return m.reply(`✳️ No puedo hacer un auto kick`)
+const handler = async (m, { conn, participants }) => {
+  const texto = m.text?.toLowerCase().trim()
 
-await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
-m.reply(`✅ Usuario eliminado con éxito`) 
+  const comandos = /^(?:\.?kick|\.?expulsar|\.?fuera|\.?sacar)(\s|$)/i
+  if (!comandos.test(texto)) return
 
+  if (!m.isGroup) return m.reply('🚫 Este comando solo funciona en grupos.')
+
+  const botAdmin = participants.find(p => p.id === conn.user.jid)?.admin
+  const userAdmin = participants.find(p => p.id === m.sender)?.admin
+  if (!botAdmin) return m.reply('🤖 Necesito ser admin para expulsar.')
+  if (!userAdmin) return m.reply('🚷 Solo los admins pueden usar este comando.')
+
+  // Detectar al usuario objetivo
+  const mentioned = m.mentionedJid?.[0]
+  const quoted = m.quoted?.sender
+  const reenviado = m.msg?.contextInfo?.participant
+
+  const target = mentioned || quoted || reenviado
+
+  if (!target) return m.reply('❗ Debes mencionar o responder a alguien para expulsarlo.')
+
+  try {
+    await conn.groupParticipantsUpdate(m.chat, [target], 'remove')
+  } catch {
+    m.reply('⚠️ No pude expulsarlo. Tal vez es admin.')
+  }
 }
 
-handler.help = ['kick @user']
-handler.tags = ['group']
-handler.command = ['kick', 'expulsar'] 
-handler.admin = true
+handler.customPrefix = /^\.?kick|\.?expulsar|\.?fuera|\.?sacar/i
+handler.command = /^$/ // sin prefijo
 handler.group = true
-handler.botAdmin = true
 
 export default handler

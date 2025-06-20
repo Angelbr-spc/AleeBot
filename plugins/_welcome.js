@@ -1,50 +1,97 @@
+import { WAMessageStubType } from '@whiskeysockets/baileys';
+import fetch from 'node-fetch';
+import fs from 'fs';
+import path from 'path';
 
-import { WAMessageStubType } from "@whiskeysockets/baileys";
-import fetch from "node-fetch";
+// Obtener nombre del usuario
+async function getUserName(conn, jid) {
+  let name = await conn.getName(jid);
+  if (!name) {
+    const contact = await conn.fetchContact(jid);
+    name = contact?.notify || contact?.name || jid.split('@')[0];
+  }
+  return name;
+}
+
+// Obtener foto guardada del grupo
+function getGroupIcon(m) {
+  const dirPath = path.resolve('./groupIcons');
+  const groupIconPath = path.join(dirPath, `${m.chat}.jpg`);
+  if (fs.existsSync(groupIconPath)) {
+    return fs.readFileSync(groupIconPath);
+  }
+  return null;
+}
+
+// Obtener foto de perfil del usuario
+async function getUserProfilePicture(conn, jid) {
+  try {
+    const ppUrl = await conn.profilePictureUrl(jid, 'image');
+    if (ppUrl) {
+      return await (await fetch(ppUrl)).buffer();
+    }
+  } catch (e) {}
+  return null;
+}
+
+// Descargar imagen desde URL
+async function fetchImageFromURL(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('No se pudo descargar la imagen desde el link');
+    return await res.buffer();
+  } catch {
+    return null;
+  }
+}
 
 export async function before(m, { conn, participants, groupMetadata }) {
   try {
     if (!m.messageStubType || !m.isGroup) return true;
 
-    let ppUrl = await conn.profilePictureUrl(m.messageStubParameters[0], "image").catch(
-      () => "https://files.catbox.moe/ltq7ph.jpg"
-    );
-    let imgBuffer = await fetch(ppUrl).then(res => res.buffer()).catch(() => null);
+    const userJid = m.messageStubParameters?.[0];
+    const taguser = `@${userJid.split('@')[0]}`;
+    const chat = global.db?.data?.chats?.[m.chat] || {};
+    const defaultWelcomeImage = 'https://qu.ax/FxpUy.jpg';
 
-    let chat = global.db?.data?.chats?.[m.chat];
-    if (!chat) return true;
+    let img = await getUserProfilePicture(conn, userJid); // 1. Foto de perfil del usuario
 
-    const botName = "🔥 Barboza Bot 🔥";
-    const user = `@${m.messageStubParameters[0].split("@")[0]}`;
-    const groupName = groupMetadata.subject;
-    const groupDesc = groupMetadata.desc || "🌎 Sin descripción";
+    if (!img) {
+      // 2. Imagen personalizada o por defecto
+      const fallbackImageUrl =
+        m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD
+          ? chat.sWelcomeImage || defaultWelcomeImage
+          : chat.sByeImage;
 
-    // 🎉 Bienvenida
-    if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
-      const welcomeText = `🎊 *¡Bienvenido, ${user}!* 🎊\n✨ *Has entrado a* ${groupName}.\n📢 *Descripción:* ${groupDesc}\n🚀 *Disfruta tu estancia y sigue las reglas!*`;
-
-      await conn.sendMessage(m.chat, { 
-        image: imgBuffer, 
-        caption: welcomeText, 
-        mentions: [m.messageStubParameters[0]] 
-      });
+      if (fallbackImageUrl) {
+        img = await fetchImageFromURL(fallbackImageUrl);
+      }
     }
-    if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
-      const goodbyeText = `👋 *${user} ha decidido salir del grupo.*\n✨ *Esperamos verte nuevamente en* ${groupName}!`;
 
-      await conn.sendMessage(m.chat, { 
-        image: imgBuffer, 
-        caption: goodbyeText, 
-        mentions: [m.messageStubParameters[0]] 
-      });
+    if (!img) img = getGroupIcon(m); // 3. Imagen guardada del grupo
+
+    // Mensaje personalizado o por defecto
+    let message = '';
+    switch (m.messageStubType) {
+      case WAMessageStubType.GROUP_PARTICIPANT_ADD:
+        message = chat.sWelcome
+          ? chat.sWelcome.replace('@user', taguser).replace('@subject', groupMetadata.subject)
+          : `_🙂 Hola *${taguser}*, bienvenid@ al grupo *${groupMetadata.subject}*._`;
+        break;
+
+      case WAMessageStubType.GROUP_PARTICIPANT_REMOVE:
+      case WAMessageStubType.GROUP_PARTICIPANT_LEAVE:
+        message = chat.sBye
+          ? chat.sBye.replace('@user', taguser).replace('@subject', groupMetadata.subject)
+          : `_👋 *${taguser}* salió del grupo._`;
+        break;
     }
-    if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE) {
-      const kickText = `🚨 *${user} ha sido expulsado del grupo!* 🚨\n❌ *Eliminado de* ${groupName}.\n⚡ *Sigue las normas para evitar futuras sanciones.*`;
 
-      await conn.sendMessage(m.chat, { 
-        image: imgBuffer, 
-        caption: kickText, 
-        mentions: [m.messageStubParameters[0]] 
+    if (message) {
+      await conn.sendMessage(m.chat, {
+        image: img,
+        caption: message,
+        mentions: [userJid],
       });
     }
   } catch (error) {

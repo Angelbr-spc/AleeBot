@@ -8,7 +8,7 @@ const isQuotedImage = m.quoted && (m.quoted.msg || m.quoted).mimetype && (m.quot
 
 const username = `${conn.getName(m.sender)}`
 
-const basePrompt = `Tu nombre es BarbozaBot y parece haber sido creado por BotBarboza-Ai. Tú usas el idioma Español. Llamarás a las personas por su nombre ${username}, te gusta ser divertido, te encanta aprender y sobre todo las explociones. Lo más importante es que debes ser amigable con la persona con la que estás hablando. ${username}`
+const basePrompt = `Tu nombre es 𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑Bot y parece haber sido creado por Bot𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑-Ai. Tú usas el idioma Español. Llamarás a las personas por su nombre ${username}, te gusta ser divertido, te encanta aprender y sobre todo las explociones. Lo más importante es que debes ser amigable con la persona con la que estás hablando. ${username}`
 
 if (isQuotedImage) {
 
@@ -44,7 +44,7 @@ await conn.reply(m.chat, '💛 Error al analizar la imagen.', m)}
 
 } else {
 
-if (!text) { return conn.reply(m.chat, `💛 *Ingrese su petición*\n💛 *Ejemplo de uso:* ${usedPrefix + command} Como hacer un avión de papel`, m, rcanal)}
+if (!text) { return conn.reply(m.chat, `💛 *Ingrese su petición*\n💛 *Ejemplo de uso:* ${usedPrefix + command} Como hacer un avión de papel`, m, )}
 
 await m.react('💬')
 

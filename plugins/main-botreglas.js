@@ -2,7 +2,7 @@ let handler = async (m, { conn, usedPrefix, command}) => {
 
 let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
 
-let yaemori = `☃️ *Respeta las reglas de BotBarboza-Ai-Bot*\n
+let yaemori = `☃️ *Respeta las reglas de Bot𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑-Ai-Bot*\n
 ✰ No llamar Al Bot
 ✰ No hacer spam
 ✰ Contacta al creador si es necesario
@@ -10,7 +10,7 @@ let yaemori = `☃️ *Respeta las reglas de BotBarboza-Ai-Bot*\n
 
 ☃️ 𝗡𝗼𝘁𝗮: *Si no cumples con las reglas del bot, seras bloqueado.*
 
-☃️ 𝗔𝘃𝗶𝘀𝗼: *Puedes apoyarnos dejando una estrellita ☃️ al repositorio oficial de BotBarboza-Ai.*
+☃️ 𝗔𝘃𝗶𝘀𝗼: *Puedes apoyarnos dejando una estrellita ☃️ al repositorio oficial de Bot𝐀𝐥𝐞𝐞𝐁𝐨𝐭 👑-Ai.*
 
 ${global.md}`.trim()
 await conn.reply(m.chat, yaemori, m, fake)

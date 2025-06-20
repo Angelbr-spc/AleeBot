@@ -33,7 +33,7 @@ var handler = async (m, { usedPrefix, command }) => {
     } catch (err) {
         await m.react('✖️'); 
         console.error(err);
-        conn.reply(m.chat, '🚩 *Ocurrió un fallo al verificar los plugins.*', m,rcanal);
+        conn.reply(m.chat, '🚩 *Ocurrió un fallo al verificar los plugins.*', m,);
     }
 };
 
