@@ -1,39 +1,45 @@
 const handler = async (m, { conn, text, participants }) => {
-  const users = participants.map(u => u.id)
-  const quoted = m.quoted || m
-  const mime = (quoted.msg || quoted).mimetype || ''
-  const caption = text || quoted.text || ''
+  const users = participants.map(p => p.id);
+  const commandUsed = m.text?.split(' ')[0] || '';
+  const mensaje = text?.replace(new RegExp(`^${commandUsed}`, 'i'), '').trim();
 
-  console.log('MIME:', mime)
-  console.log('TEXT:', caption)
+  if (m.quoted) {
+    const quoted = m.quoted;
+    const mime = (quoted.msg || quoted).mimetype || '';
+    const isMedia = /image|video|sticker|audio/.test(mime);
+    const options = { mentions: users, quoted: m };
 
-  try {
-    if (/image|video|audio|document|sticker/.test(mime)) {
-      const media = await quoted.download()
-      const type = mime.split('/')[0]
-
-      await conn.sendMessage(m.chat, {
-        [type]: media,
-        mimetype: mime,
-        caption,
-        ptt: mime.includes('audio'),
-        contextInfo: { mentionedJid: users }
-      }, { quoted: m })
-
+    if (isMedia) {
+      const media = await quoted.download();
+      if (/image/.test(mime)) {
+        return await conn.sendMessage(m.chat, { image: media, caption: mensaje, ...options });
+      } else if (/video/.test(mime)) {
+        return await conn.sendMessage(m.chat, { video: media, caption: mensaje, mimetype: 'video/mp4', ...options });
+      } else if (/audio/.test(mime)) {
+        return await conn.sendMessage(m.chat, { audio: media, mimetype: 'audio/mpeg', ptt: true, ...options });
+      } else if (/sticker/.test(mime)) {
+        return await conn.sendMessage(m.chat, { sticker: media, ...options });
+      }
     } else {
-      await conn.sendMessage(m.chat, {
-        text: caption,
-        contextInfo: { mentionedJid: users }
-      }, { quoted: m })
+      // 💬 Si el citado es texto plano
+      const citado = quoted.text || quoted.body || mensaje;
+      return await conn.sendMessage(m.chat, { text: citado || mensaje, mentions: users }, options);
     }
-  } catch (e) {
-    console.error('ERROR EN .n:', e)
-    await conn.reply(m.chat, '❌ Falló la notificación', m)
   }
-}
 
-handler.command = ['n']
-handler.group = true
-handler.admin = true
+  // Si no hay mensaje citado, pero hay texto
+  if (!mensaje) return;
 
-export default handler
+  await conn.sendMessage(m.chat, {
+    text: mensaje,
+    mentions: users
+  }, { quoted: m });
+};
+
+handler.help = ['hidetag'];
+handler.tags = ['group'];
+handler.command = /^(hidetag|notify|noti|notificar|n)$/i;
+handler.group = true;
+handler.botAdmin = true;
+
+export default handler;
